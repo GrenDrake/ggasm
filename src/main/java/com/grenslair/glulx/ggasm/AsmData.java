@@ -7,6 +7,13 @@ import java.util.Arrays;
 public class AsmData extends AsmLine {
 	private byte[] data;
 
+	public enum StringType {
+		Automatic,
+		Basic,
+		Unicode,
+		Table
+	}
+
 	/**
         Create a data segment of the specified length filled with zeros.
         @param length The size (in bytes) to make this data segment.
@@ -29,8 +36,9 @@ public class AsmData extends AsmLine {
         Create a data segment containing a string value. This will automatically
         decide whether to create a unicode or regular string.
         @param content  the string to store in the data segment
+        @param type     the mode to save the string with
 	 */
-	public AsmData(String content) {
+	public AsmData(String content, StringType type) {
 		super();
 
 		boolean needsUnicode = false;

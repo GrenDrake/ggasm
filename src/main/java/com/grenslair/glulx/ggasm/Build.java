@@ -26,7 +26,13 @@ public class Build {
 	}
 
 	public boolean fromFile(String filename) {
-		return Assemble.fromFile(asm, filename);
+		try {
+			new Assemble(asm, filename);
+		} catch (AsmException e) {
+			System.err.println("ERROR: " + e.getMessage());
+			return false;
+		}
+		return true;
 	}
 
 
@@ -41,7 +47,7 @@ public class Build {
 		String infile  = args[0];
 		String outfile = args[1];
 
-		if (!a.fromFile(infile)) {
+		if (a.fromFile(infile)) {
 			a.build(outfile);
 
 			try( PrintWriter out = new PrintWriter("codedump.txt") ){

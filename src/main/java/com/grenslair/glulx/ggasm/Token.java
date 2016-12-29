@@ -10,6 +10,9 @@ public class Token {
 	private int intValue;
 	private float floatValue;
 
+	private String fromFile;
+	private int fromLine;
+
 	/**
 	 * Specifies the various types of tokens that can occur during lexing.
 	 */
@@ -21,6 +24,7 @@ public class Token {
 		OpenBrace,
 		CloseBrace,
 		Comma,
+		End,
 		Empty
 	}
 
@@ -48,6 +52,17 @@ public class Token {
 	public Token(float value) {
 		floatValue = value;
 		type = Type.Float;
+	}
+
+	public void setSource(String file, int line) {
+		fromFile = file;
+		fromLine = line;
+	}
+	public String getFile() {
+		return fromFile;
+	}
+	public int getLine() {
+		return fromLine;
 	}
 
 	/**

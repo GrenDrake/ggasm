@@ -38,7 +38,7 @@ public class StringTable {
 	public void toCode(List<AsmLine> code) {
 		for (String key : table.keySet()) {
 			code.add(new AsmLabel(table.get(key),AsmLabel.Type.String));
-			code.add(new AsmData(key));
+			code.add(new AsmData(key, AsmData.StringType.Automatic));
 		}
 	}
 }
