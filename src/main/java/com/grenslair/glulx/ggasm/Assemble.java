@@ -70,7 +70,6 @@ public class Assemble {
 				continue;
 			}
 
-			//		for (lexPos = 0; lexPos < fileLength; ++lexPos) {
 			if (Character.isWhitespace(lexChar())) {
 				while(lexHasNext() && lexChar() != '\n' && Character.isWhitespace(lexChar())) {
 					lexNext();
@@ -358,6 +357,13 @@ public class Assemble {
 				continue;
 			}
 
+			// check for entries in the string table
+			if (stmt.get(0).equalTo("addString")) {
+				lineMatches(stmt, true, Token.Type.Identifier, Token.Type.String);
+				asm.addString(stmt.get(1).getStringValue(), stmt.get(2).getStringValue());
+				continue;
+			}
+
 			// check for data statements
 			if (stmt.get(0).equalTo("string")) {
 				lineMatches(stmt, true, Token.Type.Identifier, Token.Type.String);
@@ -374,9 +380,6 @@ public class Assemble {
 				asm.addLine(new AsmLabel(stmt.get(2).getStringValue(), AsmLabel.Type.Data));
 				byte[] data = new byte[stmt.size()-3];
 				buildBytes(data, stmt, 3);
-				for (int i = 0; i < data.length; ++i) {
-					System.err.println(data[i]);
-				}
 				asm.addLine(new AsmData(data));
 				continue;
 			}
@@ -388,9 +391,6 @@ public class Assemble {
 				}
 				byte[] data = new byte[stmt.get(2).getIntValue()];
 				buildBytes(data, stmt, 3);
-				for (int i = 0; i < data.length; ++i) {
-					System.err.println(data[i]);
-				}
 				asm.addLine(new AsmData(data));
 				continue;
 			}

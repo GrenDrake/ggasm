@@ -10,8 +10,7 @@ public class AsmData extends AsmLine {
 	public enum StringType {
 		Automatic,
 		Basic,
-		Unicode,
-		Table
+		Unicode
 	}
 
 	/**

@@ -49,23 +49,29 @@ public class Build {
 
 		if (a.fromFile(infile)) {
 			a.build(outfile);
-
-			try( PrintWriter out = new PrintWriter("codedump.txt") ){
-				out.println(a.getObjectFile().dumpCode());
-			} catch (IOException e) {
-				System.err.println(e);
-			}
-
-			try( PrintWriter out = new PrintWriter("symbols.txt") ){
-				out.println(a.getObjectFile().dumpSymbols());
-				out.println("\n");
-				out.println(a.getObjectFile().dumpConstants());
-			} catch (IOException e) {
-				System.err.println(e);
-			}
 		} else {
 			System.err.println("Errors occured during assembly.");
 			System.exit(1);
+		}
+
+		try( PrintWriter out = new PrintWriter("codedump.txt") ){
+			out.println(a.getObjectFile().dumpCode());
+		} catch (IOException e) {
+			System.err.println(e);
+		}
+
+		try( PrintWriter out = new PrintWriter("symbols.txt") ){
+			out.println(a.getObjectFile().dumpSymbols());
+			out.println("\n");
+			out.println(a.getObjectFile().dumpConstants());
+		} catch (IOException e) {
+			System.err.println(e);
+		}
+
+		try( PrintWriter out = new PrintWriter("strings.txt") ){
+			out.println(a.getObjectFile().dumpStrings());
+		} catch (IOException e) {
+			System.err.println(e);
 		}
 	}
 }

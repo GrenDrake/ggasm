@@ -155,6 +155,9 @@ public class ObjectFile {
 	public String addString(String text) {
 		return strings.addString(text);
 	}
+	public void addString(String label, String text) throws AsmException {
+		strings.addString(label, text);
+	}
 
 	public void addConstant(String name, int value, int line) {
 		constants.put(name, new Constant(line, value));
@@ -341,6 +344,12 @@ public class ObjectFile {
 		f.close();
 		return sb.toString();
 	}
-
+	/**
+	 * Dump the current string table for this game file to a string.
+	 * @return the string containig the string table.
+	 */
+	public String dumpStrings() {
+		return strings.dump();
+	}
 
 }
