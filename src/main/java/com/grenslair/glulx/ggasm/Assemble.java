@@ -322,6 +322,22 @@ public class Assemble {
 				new Assemble(asm, includedFile);
 				continue;
 			}
+            if (stmt.get(0).equalTo("includeBinary")) {
+                lineMatches(stmt, true, Token.Type.Identifier, Token.Type.Identifier, Token.Type.String);
+                String includedFile = filePath + stmt.get(3).getStringValue();
+                System.err.println("including \""+includedFile+"\" from \""+inputFile+"\" into glulx file.");
+				asm.addLine(new AsmLabel(stmt.get(1).getStringValue()));
+                try {
+        			Path path = Paths.get(includedFile);
+        			byte[] fileBytes;
+        			fileBytes = Files.readAllBytes(path);
+                    asm.addLine(new AsmData(fileBytes));
+                    asm.addConstant(stmt.get(2).getStringValue(), fileBytes.length, 0); // TODO last arg is source line);
+                } catch (IOException e) {
+        			throw new AsmException("IO Error: " + e.getMessage());
+                }
+                continue;
+            }
 			if (stmt.get(0).equalTo("constant")) {
 				lineMatches(stmt, true, Token.Type.Identifier, Token.Type.Integer);
 				asm.addConstant(stmt.get(1).getStringValue(), stmt.get(2).getIntValue(), 0); // TODO last arg is line number

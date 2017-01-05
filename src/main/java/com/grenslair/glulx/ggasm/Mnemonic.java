@@ -90,14 +90,14 @@ public class Mnemonic {
         aList.put("copyb",         new Mnemonic("copyb",         0x42,  2));
         aList.put("sexs",          new Mnemonic("sexs",          0x44,  2));
         aList.put("sexb",          new Mnemonic("sexb",          0x45,  2));
-        aList.put("aload",         new Mnemonic("aload",         0x48,  2));
-        aList.put("aloads",        new Mnemonic("aloads",        0x49,  2));
-        aList.put("aloadb",        new Mnemonic("aloads",        0x4A,  2));
-        aList.put("aloadbit",      new Mnemonic("aloads",        0x4B,  2));
-        aList.put("astore",        new Mnemonic("aloads",        0x4C,  2));
-        aList.put("astores",       new Mnemonic("aloads",        0x4D,  2));
-        aList.put("astoreb",       new Mnemonic("aloads",        0x4E,  2));
-        aList.put("astorebit",     new Mnemonic("aloads",        0x4F,  2));
+        aList.put("aload",         new Mnemonic("aload",         0x48,  3));
+        aList.put("aloads",        new Mnemonic("aloads",        0x49,  3));
+        aList.put("aloadb",        new Mnemonic("aloads",        0x4A,  3));
+        aList.put("aloadbit",      new Mnemonic("aloads",        0x4B,  3));
+        aList.put("astore",        new Mnemonic("aloads",        0x4C,  3));
+        aList.put("astores",       new Mnemonic("aloads",        0x4D,  3));
+        aList.put("astoreb",       new Mnemonic("aloads",        0x4E,  3));
+        aList.put("astorebit",     new Mnemonic("aloads",        0x4F,  3));
         // stack operations
         aList.put("stkcount",      new Mnemonic("stkcount",      0x50,  1));
         aList.put("stkpeek",       new Mnemonic("stkpeek",       0x51,  2));
