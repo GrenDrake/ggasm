@@ -60,9 +60,12 @@ string testUnicodeString "Hello 常用漢字\n"
 ; address
 bytesFixed strloc            4
 
+; include a raw binary file
+includeBinary binData binLength "test.bin"
+
 ; define the main function; every program must have a main function and this is
 ; where execution begins
-function main 1
+function main 3
 	; call the GLK setup function; this is required for us to have any output
     call setup 0 0
 
@@ -95,6 +98,16 @@ endverify:
 	; output the string located at the address contained at the address strloc
     streamstr *strloc
     streamchar 10
+	
+	; display the contents of the raw binary file we included using a loop
+	copy 0 #0
+binDataLoop:
+	aloadb binData #0 #1
+	streamstr "byte: "
+	streamnum #1
+	streamchar 10
+	add #0 1 #0
+	jne #0 binLength binDataLoop
 	
 	; all done; return
     return 0
