@@ -33,7 +33,9 @@ public class Token {
 	 * @param value  the value of the new Token object
 	 * @param type   the type of the new Token object
 	 */
-	public Token(String value, Type type) {
+	public Token(String file, int line, String value, Type type) {
+        this.fromFile = file;
+        this.fromLine = line;
 		this.stringValue = value;
 		this.type = type;
 	}
@@ -41,7 +43,9 @@ public class Token {
 	 * Create a new Integer Token object with the specified value.
 	 * @param value  the value of the new Token
 	 */
-	public Token(int value) {
+	public Token(String file, int line, int value) {
+        this.fromFile = file;
+        this.fromLine = line;
 		intValue = value;
 		type = Type.Integer;
 	}
@@ -49,21 +53,44 @@ public class Token {
 	 * Create a new Float Token object with the specified value.
 	 * @param value  the value of the new Token
 	 */
-	public Token(float value) {
+	public Token(String file, int line, float value) {
+        this.fromFile = file;
+        this.fromLine = line;
 		floatValue = value;
 		type = Type.Float;
 	}
+    /**
+     * Create a new token of the specified type with no value.
+     * @param type  the type of Token to create
+    */
+    public Token(String file, int line, Type type) {
+        this.fromFile = file;
+        this.fromLine = line;
+		this.type = type;
+    }
 
-	public void setSource(String file, int line) {
-		fromFile = file;
-		fromLine = line;
-	}
+    /**
+     * Return the file that this token is from.
+     * @return the name of the file this token is from
+     */
 	public String getFile() {
 		return fromFile;
 	}
+    /**
+     * Return the line that this token is from.
+     * @return the line this token is from
+     */
 	public int getLine() {
 		return fromLine;
 	}
+    /**
+     * Return a formatted string containing the file and line that this Token 
+     * originated from.
+     * @return the name and line of this Token's source as a string
+     */
+    public String getSource() {
+        return fromFile+"("+fromLine+")";
+    }
 
 	/**
 	 * Get the Type of this Token.

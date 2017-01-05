@@ -66,7 +66,7 @@ public class Assemble {
 			// parse end of statement
 			if (lexChar() == '\n') {
 				lexNext();
-				tokenList.add(new Token("", Token.Type.End));
+				tokenList.add(new Token(inputFile, lexerLine, Token.Type.End));
 				continue;
 			}
 
@@ -79,7 +79,7 @@ public class Assemble {
 
 			// end-of-line comment
 			if (lexChar() == ';') {
-				tokenList.add(new Token("", Token.Type.End));
+				tokenList.add(new Token(inputFile, lexerLine, "", Token.Type.End));
 				while(lexHasNext() && lexChar() != '\n') {
 					lexNext();
 				}
@@ -94,7 +94,7 @@ public class Assemble {
 					lexNext();
 				}
 				if (!lexHasNext()) {
-					throw new AsmException("Unterminated string.");
+					throw new AsmException(inputFile+"("+lexerLine+"): Unterminated string.");
 				}
 				end = lexPos;
 				lexNext();
@@ -123,7 +123,7 @@ public class Assemble {
 							case 'x':  // character by hex code
 								++i;
 								if (i >= text.length() || !isHexDigit(text.charAt(i))) {
-									throw new AsmException("Unexpected end of escape in \\xXX");
+									throw new AsmException(inputFile+"("+lexerLine+"): Unexpected end of escape in \\xXX");
 								}
 								start = i;
 								while (i < text.length() && isHexDigit(text.charAt(i))) {
@@ -135,14 +135,14 @@ public class Assemble {
 								--i;
 								break;
 							default:   // unknown
-								throw new AsmException("Unknown character escape \\" + text.charAt(i));
+								throw new AsmException(inputFile+"("+lexerLine+"): Unknown character escape \\" + text.charAt(i));
 						}
 					} else {
 						sb.append(text.charAt(i));
 					}
 				}
 
-				tokenList.add(new Token(sb.toString(), Token.Type.String));
+				tokenList.add(new Token(inputFile, lexerLine, sb.toString(), Token.Type.String));
 
 				// parse decimal numbers
 			} else if (lexChar() == '-' || Character.isDigit(lexChar())) {
@@ -156,9 +156,9 @@ public class Assemble {
 					lexNext();
 				}
 				if (parseFloat) {
-					tokenList.add(new Token(Float.floatToRawIntBits(Float.parseFloat(fileContent.substring(start,lexPos)))));
+					tokenList.add(new Token(inputFile, lexerLine, Float.floatToRawIntBits(Float.parseFloat(fileContent.substring(start,lexPos)))));
 				} else {
-					tokenList.add(new Token(Integer.parseInt(fileContent.substring(start,lexPos), 10)));
+					tokenList.add(new Token(inputFile, lexerLine, Integer.parseInt(fileContent.substring(start,lexPos), 10)));
 				}
 
 				// parse hex numbers
@@ -168,7 +168,7 @@ public class Assemble {
 				while (lexHasNext() && isHexDigit(lexChar())) {
 					lexNext();
 				}
-				tokenList.add(new Token(Integer.parseInt(fileContent.substring(start,lexPos), 16)));
+				tokenList.add(new Token(inputFile, lexerLine, Integer.parseInt(fileContent.substring(start,lexPos), 16)));
 
 				// parse identifiers
 			} else if (isIdentifier(lexChar(), true)) {
@@ -182,14 +182,14 @@ public class Assemble {
 				}
 				end = lexPos;
 				String text = fileContent.substring(start,end);
-				tokenList.add(new Token(text, Token.Type.Identifier));
+				tokenList.add(new Token(inputFile, lexerLine, text, Token.Type.Identifier));
 
 			} else {
 				// unknown
 				throw new AsmException(inputFile+"("+lexerLine+"): Lexer: unexpected " + new String(Character.toChars(lexChar())) + " (" + lexChar() + ")");
 			}
 		}
-		tokenList.add(new Token("", Token.Type.End));
+		tokenList.add(new Token(inputFile, lexerLine, "", Token.Type.End));
 	}
 	/**
 	 * Return the value of the next character from the file. This will advance
@@ -267,13 +267,13 @@ public class Assemble {
 	static public void lineMatches(List<Token> parts, boolean matchLength, Token.Type ...types)
 			throws AsmException {
 		if (matchLength && parts.size() != types.length + 1) {
-			throw new AsmException("Bad operand count for " + parts.get(0).getStringValue() +
+			throw new AsmException(parts.get(0).getSource()+": Bad operand count for " + parts.get(0).getStringValue() +
 					" expected " + types.length + ", but found " +
 					(parts.size()-1) + ".");
 		}
 		for (int i = 0; i < parts.size() && i < types.length; ++i) {
 			if (!parts.get(i+1).isType(types[i])) {
-				throw new AsmException("Operand " + i + " is " +
+				throw new AsmException(parts.get(0).getSource()+": Operand " + i + " is " +
 						parts.get(i+1).getType() + ", but " +
 						types[i] + " was expected for " +
 						parts.get(0).getStringValue() + ".");
@@ -296,7 +296,7 @@ public class Assemble {
 				continue;
 			}
 			if (!stmt.get(0).isType(Token.Type.Identifier)) {
-				throw new AsmException("Expected statement to begin with identifier.");
+				throw new AsmException(stmt.get(0).getSource()+": Expected statement to begin with identifier.");
 			}
 
 			// check for directives
@@ -353,7 +353,7 @@ public class Assemble {
 					continue;
 				}
 				if (!stmt.get(0).isType(Token.Type.Identifier)) {
-					throw new AsmException("Expected statement to begin with identifier.");
+					throw new AsmException(stmt.get(0).getSource()+": Expected statement to begin with identifier.");
 				}
 			}
 
@@ -391,7 +391,7 @@ public class Assemble {
 				lineMatches(stmt, false, Token.Type.Identifier);
 				int width = stmt.get(1).getIntValue();
 				if (width != 8 && width != 16 && width != 32) {
-					throw new AsmException("bytes statement expects width of 8, 16, or 32.");
+					throw new AsmException(stmt.get(0).getSource()+": bytes statement expects width of 8, 16, or 32.");
 				}
 				asm.addLine(new AsmLabel(stmt.get(2).getStringValue(), AsmLabel.Type.Data));
 				byte[] data = new byte[stmt.size()-3];
@@ -403,7 +403,7 @@ public class Assemble {
 				lineMatches(stmt, false, Token.Type.Identifier, Token.Type.Integer);
 				asm.addLine(new AsmLabel(stmt.get(1).getStringValue(), AsmLabel.Type.Data));
 				if (stmt.get(2).getIntValue() < stmt.size() - 3) {
-					throw new AsmException("bytesFixed has size of " + stmt.get(2).getIntValue() + ", but " + (stmt.size() - 3) + " values.");
+					throw new AsmException(stmt.get(0).getSource()+"): bytesFixed has size of " + stmt.get(2).getIntValue() + ", but " + (stmt.size() - 3) + " values.");
 				}
 				byte[] data = new byte[stmt.get(2).getIntValue()];
 				buildBytes(data, stmt, 3);
@@ -414,7 +414,7 @@ public class Assemble {
 			if (stmt.get(0).equalTo("_glk") || stmt.get(0).equalTo("_call")) {
 				boolean isCall = (stmt.get(0).equalTo("_call"));
 				if (stmt.get(1).isType(Token.Type.Identifier) && (!isCall && stmt.get(1).isType(Token.Type.Integer))) {
-					throw new AsmException("Invalid function name for " + stmt.get(0).getStringValue());
+					throw new AsmException(stmt.get(0).getSource()+": Invalid function name for " + stmt.get(0).getStringValue());
 				}
 				// add instructions to push args onto stack
 				for (int i = stmt.size() - 2; i > 1; --i) {
@@ -442,7 +442,7 @@ public class Assemble {
 				// get the mnemonic
 				Mnemonic m = Mnemonic.list.get(stmt.get(0).getStringValue());
 				if (m.operands != stmt.size() - 1) {
-					throw new AsmException("Bad operand count");
+					throw new AsmException(stmt.get(0).getSource()+": Bad operand count");
 				}
 
 				AsmInstruction ai = new AsmInstruction(m);
@@ -451,7 +451,7 @@ public class Assemble {
 				}
 				asm.addLine(ai);
 			} else {
-				throw new AsmException("Unknown mnemonic \"" + stmt.get(0).getStringValue() + "\"");
+				throw new AsmException(stmt.get(0).getSource()+": Unknown mnemonic \"" + stmt.get(0).getStringValue() + "\"");
 			}
 		}
 	}
@@ -459,12 +459,12 @@ public class Assemble {
 	private void buildBytes(byte[] data, ArrayList<Token> stmt, int startPos) throws AsmException{
 		for (int i = startPos; i < stmt.size(); ++i) {
 			if (!stmt.get(i).isType(Token.Type.Integer)) {
-				throw new AsmException("expected int value(s) for bytes statement");
+				throw new AsmException(stmt.get(i).getSource()+"expected int value(s) for bytes statement");
 			}
 			int value = stmt.get(i).getIntValue();
 			byte b = (byte)(value);
 			if (b != value) {
-				throw new AsmException("bytes requires 1 byte values");
+				throw new AsmException(stmt.get(i).getSource()+"bytes requires 1 byte values");
 			}
 			data[i-startPos] = b;
 		}
