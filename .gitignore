@@ -1,10 +1,16 @@
+# Ignore gradle stuff
+.gradle
+build
+# Ignore MacOS Stuff
 .DS_Store
+# Ignore Eclipse Stuff
 .project
 .settings
+# Ignore generated output
+*.ulx
 symbols.txt
 codedump.txt
 strings.txt
-asmFiles
+asmFiles/test.asm
 ggcom-stuff
 bin
-build
