@@ -1,3 +1,3 @@
 #! /bin/sh
-java -cp bin com.grenslair.glulx.ggasm.Build asmFiles/test.asm asmFiles/file.ulx
+java -jar ./build/libs/GGASM-1.0.jar asmFiles/basic.asm asmFiles/basic.ulx
 # echo $?
