@@ -85,6 +85,30 @@ public class Assemble {
 				}
 				continue;
 			}
+            
+            // parse character constants
+			if (lexChar() == '\'') {
+				lexNext();
+				start = lexPos;
+				while (lexHasNext() && (lexChar() != '\'' || lexPrev() == '\\')) {
+					lexNext();
+				}
+				if (!lexHasNext()) {
+					throw new AsmException(inputFile+"("+lexerLine+"): Unterminated string.");
+				}
+				end = lexPos;
+				lexNext();
+				String text = fileContent.substring(start,end);
+                
+                if (text.length() == 0) {
+					throw new AsmException(inputFile+"("+lexerLine+"): empty character constant.");
+                }
+                if (text.length() > 1) {
+					throw new AsmException(inputFile+"("+lexerLine+"): character constant has multiple characters.");
+                }
+				tokenList.add(new Token(inputFile, lexerLine, text.codePointAt(0)));
+                continue;
+            }
 
 			// parse strings
 			if (lexChar() == '"') {
@@ -109,6 +133,7 @@ public class Assemble {
 								break;
 							case '\\': // backslash
 							case '"':  // quote
+                            case '\'': // single quote
 								sb.append(text.charAt(i));
 								break;
 							case 'n':  // newline

@@ -53,7 +53,7 @@ function printFloat 3
 	fmod #0 1.0 #1 #2
 	ftonumz #2 #2
 	streamnum #2
-	streamchar 46 ; '.'
+	streamchar '.'
 	
 	fmul #1 1000.0 #1
 	ftonumz #1 #1

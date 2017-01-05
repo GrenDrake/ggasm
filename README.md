@@ -15,7 +15,6 @@ Floating point support is currently experimental and needs further testing.
 There are a few notable features that have not yet been implemented yet:
 
 * Labels and constants cannot currently be used in data statements
-* Character constants
 
 ## Building
 
