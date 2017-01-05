@@ -30,19 +30,19 @@ function testFunc 5
     copy 1 #4
 	; print local one and multiply it into local five
     streamnum #0
-    streamchar 32
+    streamchar ' '
     mul #4 #0 #4
 	; print local two and multiply it into local five
     streamnum #1
-    streamchar 32
+    streamchar ' '
     mul #4 #1 #4
 	; print local three and multiply it into local five
     streamnum #2
-    streamchar 32
+    streamchar ' '
     mul #4 #2 #4
 	; print local four and multiply it into local five
     streamnum #3
-    streamchar 10
+    streamchar '\n'
     mul #4 #3 #4
 	; return the final result
     return #4
@@ -107,11 +107,11 @@ endverify:
 	; output the result of the test function
     streamstr "std testFunc: " 
     streamnum sp
-    streamchar 10
+    streamchar '\n'
 	
 	; output the string located at the address contained at the address strloc
     streamstr *strloc
-    streamchar 10
+    streamchar '\n'
 	
 	; display the contents of the raw binary file we included using a loop
 	copy 0 #0
@@ -119,19 +119,19 @@ binDataLoop:
 	aloadb binData #0 #1
 	streamstr "byte: "
 	streamnum #1
-	streamchar 10
+	streamchar '\n'
 	add #0 1 #0
 	jne #0 binLength binDataLoop
-	streamchar 10
+	streamchar '\n'
 		
 	; print two different floats
 	streamstr "Print a integral float: "
 	_call printFloat 7.0 0
-	streamchar 10
+	streamchar '\n'
 	
 	streamstr "Print a non-integral float: "
 	_call printFloat 7.54354 0
-	streamchar 10
+	streamchar '\n'
 	
 	; all done; return
     return 0

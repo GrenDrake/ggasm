@@ -47,6 +47,58 @@ public class Assemble {
 		doParse();
 	}
 
+    /**
+     * Replace escape characters within the provided text with their real 
+     * versions
+     * @param text  the string to replace escape codes within
+     * @return the string after escape evaluation is complete
+     */
+    public String doEscapes(String text) throws AsmException {
+		StringBuilder sb = new StringBuilder();
+		// TODO update for unicode
+		for (int i = 0; i < text.length(); ++i) {
+			if (text.charAt(i) == '\\') {
+				++i;
+				switch(text.charAt(i)) {
+					case '0':  // nothing
+						break;
+					case '\\': // backslash
+					case '"':  // quote
+                    case '\'': // single quote
+						sb.append(text.charAt(i));
+						break;
+					case 'n':  // newline
+						sb.append('\n');
+						break;
+					case 'r':  // return
+						sb.append('\r');
+						break;
+					case 't':  // tab
+						sb.append('\t');
+						break;
+					case 'x':  // character by hex code
+						++i;
+						if (i >= text.length() || !isHexDigit(text.charAt(i))) {
+							throw new AsmException(inputFile+"("+lexerLine+"): Unexpected end of escape in \\xXX");
+						}
+						int start = i;
+						while (i < text.length() && isHexDigit(text.charAt(i))) {
+							++i;
+						}
+						int v = Integer.parseInt(text.substring(start,i), 16);
+						System.err.println(v);
+						sb.appendCodePoint(v);
+						--i;
+						break;
+					default:   // unknown
+						throw new AsmException(inputFile+"("+lexerLine+"): Unknown character escape \\" + text.charAt(i));
+				}
+			} else {
+				sb.append(text.charAt(i));
+			}
+		}
+        return sb.toString();
+    }
 
 	/**
 	 * Parse one line from an assembly input file and return a list of tokens
@@ -99,6 +151,7 @@ public class Assemble {
 				end = lexPos;
 				lexNext();
 				String text = fileContent.substring(start,end);
+                text = doEscapes(text);
                 
                 if (text.length() == 0) {
 					throw new AsmException(inputFile+"("+lexerLine+"): empty character constant.");
@@ -123,7 +176,8 @@ public class Assemble {
 				end = lexPos;
 				lexNext();
 				String text = fileContent.substring(start,end);
-				StringBuilder sb = new StringBuilder();
+                text = doEscapes(text);
+/*				StringBuilder sb = new StringBuilder();
 				// TODO update for unicode
 				for (int i = 0; i < text.length(); ++i) {
 					if (text.charAt(i) == '\\') {
@@ -165,9 +219,9 @@ public class Assemble {
 					} else {
 						sb.append(text.charAt(i));
 					}
-				}
+				}*/
 
-				tokenList.add(new Token(inputFile, lexerLine, sb.toString(), Token.Type.String));
+				tokenList.add(new Token(inputFile, lexerLine, text, Token.Type.String));
 
 				// parse decimal numbers
 			} else if (lexChar() == '-' || Character.isDigit(lexChar())) {
