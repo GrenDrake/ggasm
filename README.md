@@ -71,6 +71,6 @@ labelName: copy 1 #0
 
 An instruction consists of a mnemonic followed by a series of operands. For the meaning of the various mnemonics, check [Andrew Plotkin's glulx spec](http://www.eblong.com/zarf/glulx/glulx-spec.html).
 
-An operand may be one of an integer or floating point number, a constant, a label, or a string. In addition, an integer may be preceded by a pound sign (#) to indicate a local variable; #0 is the first local variable, #1 the second, etc. An operand may also be preceded by a asterisk to indicate the opcode should use the contents of the memory location specified. So, ***labelName** would use what was contained at labelName rather than labelName itself; see the opcode list in the spec linked above to get an idea where this should be used.
+An operand may be one of an integer or floating point number, a constant, a label, or a string. In addition, an integer may be preceded by a pound sign (#) to indicate a local variable; #0 is the first local variable, #1 the second, etc. An operand may also be preceded by a asterisk to indicate the opcode should use the contents of the memory location specified. So, _\*labelName_ would use what was contained at labelName rather than labelName itself; see the opcode list in the spec linked above to get an idea where this should be used.
 
 There are two "shortcut" opcodes as well: \_glk and \_call. This will be expanded by the assembler into the required copy operations to put the arguments onto the stack in the correct order before calling the indicated opcode.
