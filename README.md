@@ -10,10 +10,12 @@ More information on Glulx and Glk is available from Andrew Plotkin's specificati
 
 In its current version, GGASM is fully capable of transforming source files into functional Glulx game files.
 
+Floating point support is currently experimental and needs further testing.
+
 There are a few notable features that have not yet been implemented yet:
 
-* Floating point is largely unimplemented and untested
 * Labels and constants cannot currently be used in data statements
+* Character constants
 
 ## Building
 

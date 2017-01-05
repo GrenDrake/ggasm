@@ -156,7 +156,7 @@ public class Assemble {
 					lexNext();
 				}
 				if (parseFloat) {
-					tokenList.add(new Token(inputFile, lexerLine, Float.floatToRawIntBits(Float.parseFloat(fileContent.substring(start,lexPos)))));
+					tokenList.add(new Token(inputFile, lexerLine, Float.parseFloat(fileContent.substring(start,lexPos))));
 				} else {
 					tokenList.add(new Token(inputFile, lexerLine, Integer.parseInt(fileContent.substring(start,lexPos), 10)));
 				}

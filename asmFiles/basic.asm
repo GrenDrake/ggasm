@@ -47,6 +47,20 @@ function testFunc 5
 	; return the final result
     return #4
 
+; this is a simple function that prints floats to three decimal places; glulx
+; doesn't seem to have a built in "streamfloat" unfortunately
+function printFloat 3
+	fmod #0 1.0 #1 #2
+	ftonumz #2 #2
+	streamnum #2
+	streamchar 46 ; '.'
+	
+	fmul #1 1000.0 #1
+	ftonumz #1 #1
+	streamnum #1
+
+	return 0
+
 ; add a string to the string table and give it the specified label; the string 
 ; table will be located in ROM space and will combine duplicate strings
 addString theBigString "Hello world! I am a really good string!\n"
@@ -108,6 +122,16 @@ binDataLoop:
 	streamchar 10
 	add #0 1 #0
 	jne #0 binLength binDataLoop
+	streamchar 10
+		
+	; print two different floats
+	streamstr "Print a integral float: "
+	_call printFloat 7.0 0
+	streamchar 10
+	
+	streamstr "Print a non-integral float: "
+	_call printFloat 7.54354 0
+	streamchar 10
 	
 	; all done; return
     return 0

@@ -77,6 +77,10 @@ public class Operand {
                 this.symbolName = objFile.addString(token.getStringValue());
                 this.mode = Mode.Constant;
                 break;
+            case Float:
+                this.value = Float.floatToRawIntBits(token.getFloatValue());
+                this.mode = Mode.Constant;
+                break;
             case Identifier:
                 // handle stack reference
                 if (token.getStringValue().equals("sp")) {
