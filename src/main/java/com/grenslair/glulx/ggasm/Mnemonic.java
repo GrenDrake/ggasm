@@ -77,13 +77,13 @@ public class Mnemonic {
         // function calls
         aList.put("call",          new Mnemonic("call",          0x30,  3));
         aList.put("return",        new Mnemonic("return",        0x31,  1));
-        aList.put("catch",         new Mnemonic("catch",         0x33,  2));
-        aList.put("throw",         new Mnemonic("throw",         0x34,  2));
-        aList.put("tailcall",      new Mnemonic("tailcall",      0x35,  2));
-        aList.put("callf",         new Mnemonic("callf",         0x35,  2));
-        aList.put("callfi",        new Mnemonic("callfi",        0x35,  3));
-        aList.put("callfii",       new Mnemonic("callfii",       0x35,  4));
-        aList.put("callfiii",      new Mnemonic("callfiii",      0x35,  5));
+        aList.put("catch",         new Mnemonic("catch",         0x32,  2));
+        aList.put("throw",         new Mnemonic("throw",         0x33,  2));
+        aList.put("tailcall",      new Mnemonic("tailcall",      0x34,  2));
+        aList.put("callf",         new Mnemonic("callf",         0x160, 2));
+        aList.put("callfi",        new Mnemonic("callfi",        0x161, 3));
+        aList.put("callfii",       new Mnemonic("callfii",       0x162, 4));
+        aList.put("callfiii",      new Mnemonic("callfiii",      0x163, 5));
         // moving data
         aList.put("copy",          new Mnemonic("copy",          0x40,  2));
         aList.put("copys",         new Mnemonic("copys",         0x41,  2));
