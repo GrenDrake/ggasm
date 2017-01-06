@@ -37,10 +37,13 @@ public class AsmData extends AsmLine {
         @param content  the string to store in the data segment
         @param type     the mode to save the string with
 	 */
-	public AsmData(String content, StringType type) {
+	public AsmData(String content, StringType type) throws AsmException {
 		super();
 
 		boolean needsUnicode = false;
+        if (type == StringType.Unicode) {
+            needsUnicode = true;
+        }
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		int length = content.length();
 		for (int i = 0; i < length; ) {
@@ -53,6 +56,9 @@ public class AsmData extends AsmLine {
 		}
 
 		if (needsUnicode) {
+            if (type == StringType.Basic) {
+                throw new AsmException("Declared basic string contains Unicode characters");
+            }
 			data = new byte[(content.length()+2)*4];
 			ByteBuffer datab = ByteBuffer.wrap(data);
 			datab.putInt(0xE2000000);

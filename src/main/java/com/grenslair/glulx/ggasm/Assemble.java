@@ -466,6 +466,18 @@ public class Assemble {
 				asm.addLine(new AsmData(stmt.get(2).getStringValue(), AsmData.StringType.Automatic));
 				continue;
 			}
+			if (stmt.get(0).equalTo("basicString")) {
+				lineMatches(stmt, true, Token.Type.Identifier, Token.Type.String);
+				asm.addLine(new AsmLabel(stmt.get(1).getStringValue(), AsmLabel.Type.String));
+				asm.addLine(new AsmData(stmt.get(2).getStringValue(), AsmData.StringType.Basic));
+				continue;
+			}
+			if (stmt.get(0).equalTo("unicodeString")) {
+				lineMatches(stmt, true, Token.Type.Identifier, Token.Type.String);
+				asm.addLine(new AsmLabel(stmt.get(1).getStringValue(), AsmLabel.Type.String));
+				asm.addLine(new AsmData(stmt.get(2).getStringValue(), AsmData.StringType.Unicode));
+				continue;
+			}
 			if (stmt.get(0).equalTo("bytes")) {
 				lineMatches(stmt, false, Token.Type.Identifier);
 				int width = stmt.get(1).getIntValue();

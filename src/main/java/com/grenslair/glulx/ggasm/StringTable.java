@@ -79,16 +79,21 @@ public class StringTable {
 	}
 
 	public void toCode(List<AsmLine> code) {
-		for (String key : table.keySet()) {
-			String label = table.get(key);
-			if (alias.containsKey(label)) {
-				ArrayList<String> al = alias.get(label);
-				for (String s : al) {
-					code.add(new AsmLabel(s, AsmLabel.Type.String));
-				}
-			}
-			code.add(new AsmLabel(table.get(key),AsmLabel.Type.String));
-			code.add(new AsmData(key, AsmData.StringType.Automatic));
-		}
+        try {
+    		for (String key : table.keySet()) {
+    			String label = table.get(key);
+    			if (alias.containsKey(label)) {
+    				ArrayList<String> al = alias.get(label);
+    				for (String s : al) {
+    					code.add(new AsmLabel(s, AsmLabel.Type.String));
+    				}
+    			}
+    			code.add(new AsmLabel(table.get(key),AsmLabel.Type.String));
+    			code.add(new AsmData(key, AsmData.StringType.Automatic));
+    		}
+        } catch (AsmException e) {
+            // this should never happen;
+            System.err.println("Unexpected error: " + e.getMessage());
+        }
 	}
 }
