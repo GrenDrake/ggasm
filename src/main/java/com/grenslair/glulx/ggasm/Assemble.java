@@ -480,13 +480,10 @@ public class Assemble {
 			}
 			if (stmt.get(0).equalTo("bytes")) {
 				lineMatches(stmt, false, Token.Type.Identifier);
-				int width = stmt.get(1).getIntValue();
-				if (width != 8 && width != 16 && width != 32) {
-					throw new AsmException(stmt.get(0).getSource()+": bytes statement expects width of 8, 16, or 32.");
-				}
-				asm.addLine(new AsmLabel(stmt.get(2).getStringValue(), AsmLabel.Type.Data));
-				byte[] data = new byte[stmt.size()-3];
-				buildBytes(data, stmt, 3);
+				asm.addLine(new AsmLabel(stmt.get(1).getStringValue(), AsmLabel.Type.Data));
+				byte[] data = new byte[stmt.size()-2];
+                System.out.println(data);
+				buildBytes(data, stmt, 2);
 				asm.addLine(new AsmData(data));
 				continue;
 			}
@@ -554,7 +551,7 @@ public class Assemble {
 			}
 			int value = stmt.get(i).getIntValue();
 			byte b = (byte)(value);
-			if (b != value) {
+			if ( (((int)b)&0xFF) != value) {
 				throw new AsmException(stmt.get(i).getSource()+"bytes requires 1 byte values");
 			}
 			data[i-startPos] = b;
