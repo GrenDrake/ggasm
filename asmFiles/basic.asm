@@ -165,9 +165,9 @@ binDataLoop:
 
 	; display a poetry quote as a farewell
 	streamstr "\n\nA Quote:\n"
-	_glk glksetstyle styleEmphasized 0
+	_glk glkSetStyle styleEmphasized 0
 	streamstr kiplingIfQuote
-    _glk glksetstyle styleNormal 0
+    _glk glkSetStyle styleNormal 0
     streamstr "- Rudyard Kipling, If-\n"
 
 	; all done; return
