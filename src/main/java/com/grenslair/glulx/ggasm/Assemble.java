@@ -473,28 +473,7 @@ public class Assemble {
 			}
 			// check for a shortcut mnemonic (_glk or _call)
 			if (stmt.get(0).equalTo("_glk") || stmt.get(0).equalTo("_call")) {
-				boolean isCall = (stmt.get(0).equalTo("_call"));
-				if (stmt.get(1).isType(Token.Type.Identifier) && (!isCall && stmt.get(1).isType(Token.Type.Integer))) {
-					throw new AsmException(stmt.get(0).getSource()+": Invalid function name for " + stmt.get(0).getStringValue());
-				}
-				// add instructions to push args onto stack
-				for (int i = stmt.size() - 2; i > 1; --i) {
-					AsmInstruction ai = new AsmInstruction(Mnemonic.list.get("copy"));
-					ai.addOperand(new Operand(stmt.get(i), asm));
-					ai.addOperand(new Operand(-1, Operand.Mode.Variable));
-					asm.addLine(ai);
-				}
-				// add actual GLK instruction
-				AsmInstruction ai;
-				if (isCall) {
-					ai = new AsmInstruction(Mnemonic.list.get("call"));
-				} else {
-					ai = new AsmInstruction(Mnemonic.list.get("glk"));
-				}
-				ai.addOperand(new Operand(stmt.get(1), asm));
-				ai.addOperand(new Operand(stmt.size() - 3));
-				ai.addOperand(new Operand(stmt.get(stmt.size()-1), asm));
-				asm.addLine(ai);
+                doShortcutCall(stmt);
 				continue;
 			}
 
@@ -515,6 +494,74 @@ public class Assemble {
 				throw new AsmException(stmt.get(0).getSource()+": Unknown mnemonic \"" + stmt.get(0).getStringValue() + "\"");
 			}
 		}
+	}
+
+	/**
+	 * Perform a shortcut call for either the glk or call opcode.
+	 * @param stmt  the list of tokens for this call
+	 */
+	private void doShortcutCall(ArrayList<Token> stmt) throws AsmException {
+        boolean isCall = (stmt.get(0).equalTo("_call"));
+        if (stmt.get(1).isType(Token.Type.Identifier) && (!isCall && stmt.get(1).isType(Token.Type.Integer))) {
+            throw new AsmException(stmt.get(0).getSource()+": Invalid function name for " + stmt.get(0).getStringValue());
+        }
+
+        // check that we have enough arguments
+        if (isCall && stmt.size() < 3) {
+            throw new AsmException(stmt.get(0).getSource()+": insufficent operands for _call (min 2)");
+        }
+        if (!isCall && stmt.size() < 4) {
+            throw new AsmException(stmt.get(0).getSource()+": insufficent operands for _glk (min 3)");
+        }
+
+        if (isCall && stmt.size() - 3 <= 3) {
+            AsmInstruction ai;
+            switch(stmt.size() - 3) {
+                case 0:
+                    ai = new AsmInstruction(Mnemonic.list.get("callf"));
+                    break;
+                case 1:
+                    ai = new AsmInstruction(Mnemonic.list.get("callfi"));
+                    break;
+                case 2:
+                    ai = new AsmInstruction(Mnemonic.list.get("callfii"));
+                    break;
+                case 3:
+                    ai = new AsmInstruction(Mnemonic.list.get("callfiii"));
+                    break;
+                default:
+                    throw new AsmException(stmt.get(0).getSource()+": error in assembler; tried to construct callf* opcode with bad operand count");
+            }
+            // operand for function address
+            ai.addOperand(new Operand(stmt.get(1), asm));
+            // general operands
+            for (int i = 2; i < stmt.size() - 1; ++i) {
+                ai.addOperand(new Operand(stmt.get(i), asm));
+            }
+            // operand for return value
+            ai.addOperand(new Operand(stmt.get(stmt.size()-1), asm));
+            asm.addLine(ai);
+            return;
+        }
+
+        // add instructions to push args onto stack
+        for (int i = stmt.size() - 2; i > 1; --i) {
+            AsmInstruction ai = new AsmInstruction(Mnemonic.list.get("copy"));
+            ai.addOperand(new Operand(stmt.get(i), asm));
+            ai.addOperand(new Operand(-1, Operand.Mode.Variable));
+            asm.addLine(ai);
+        }
+        // add actual GLK instruction
+        AsmInstruction ai;
+        if (isCall) {
+            ai = new AsmInstruction(Mnemonic.list.get("call"));
+        } else {
+            ai = new AsmInstruction(Mnemonic.list.get("glk"));
+        }
+        ai.addOperand(new Operand(stmt.get(1), asm));
+        ai.addOperand(new Operand(stmt.size() - 3));
+        ai.addOperand(new Operand(stmt.get(stmt.size()-1), asm));
+        asm.addLine(ai);
 	}
 
 	private void buildBytes(byte[] data, ArrayList<Token> stmt, int startPos) throws AsmException{
