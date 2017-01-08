@@ -486,7 +486,6 @@ public class Assemble {
 				lineMatches(stmt, false, Token.Type.Identifier);
 				asm.addLine(new AsmLabel(stmt.get(1).getStringValue(), AsmLabel.Type.Data));
 				byte[] data = new byte[stmt.size()-2];
-                System.out.println(data);
 				buildBytes(data, stmt, 2);
 				asm.addLine(new AsmData(data));
 				continue;
@@ -538,11 +537,8 @@ public class Assemble {
         }
 
         // check that we have enough arguments
-        if (isCall && stmt.size() < 3) {
-            throw new AsmException(stmt.get(0).getSource()+": insufficent operands for _call (min 2)");
-        }
-        if (!isCall && stmt.size() < 4) {
-            throw new AsmException(stmt.get(0).getSource()+": insufficent operands for _glk (min 3)");
+        if (stmt.size() < 3) {
+            throw new AsmException(stmt.get(0).getSource()+": insufficent operands for " + stmt.get(0).getStringValue() + " (min 2)");
         }
 
         if (isCall && stmt.size() - 3 <= 3) {
