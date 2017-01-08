@@ -4,16 +4,18 @@ include "glk.asm"
 ; set the stack size to 2048 bytes; this must be a multiple of 256
 stackSize 2048
 
+; a place to store the main window reference
+bytesFixed mainWindow 4
 ; declare a function for setting up the GLK environment; the zero indicates
 ; that this takes no arguments
 function setup 0
     setiosys ioSysGlk 0
 	; _glk is a "shortcut" opcode that will automatically push the required
 	; paramaters in the appropriate order before calling the actual glk opcode
-    _glk glkWindowOpen 0 0 0 wintypeTextBuffer 0 sp
+    _glk glkWindowOpen 0 0 0 wintypeTextBuffer 0 *mainWindow
 	; in this case there are no paramaters so we're just using the actual glk
 	; opcode
-    glk glkSetWindow 1 0
+    _glk glkSetWindow *mainWindow 0
 	; all done; return
     return 0
 
