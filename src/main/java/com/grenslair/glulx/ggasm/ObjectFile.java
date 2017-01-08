@@ -310,9 +310,13 @@ public class ObjectFile {
 	 */
 	public String dumpCode() {
 		StringBuilder sb = new StringBuilder();
-		for (AsmLine line : instructions) {
-			sb.append(line.getPosition() + "/" + line.getSize() + ": " + line+"\n");
-		}
+        for (AsmLine line : romArea) {
+            sb.append(line.getPosition() + "/" + line.getSize() + ": " + line+"\n");
+        }
+        sb.append("-- END OF ROM ------------------------------------------------------------------\n");
+        for (AsmLine line : instructions) {
+            sb.append(line.getPosition() + "/" + line.getSize() + ": " + line+"\n");
+        }
 		return sb.toString();
 	}
 	/**
