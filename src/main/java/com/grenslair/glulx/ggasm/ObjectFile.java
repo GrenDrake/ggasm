@@ -191,9 +191,12 @@ public class ObjectFile {
 		return false;
 	}
 	public void replaceSymbols() throws AsmException {
-		for (AsmLine line : instructions) {
-			line.replaceSymbols();
-		}
+        for (AsmLine line : romArea) {
+            line.replaceSymbols();
+        }
+        for (AsmLine line : instructions) {
+            line.replaceSymbols();
+        }
 	}
 
 	/**
