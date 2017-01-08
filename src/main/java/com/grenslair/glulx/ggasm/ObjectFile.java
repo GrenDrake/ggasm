@@ -157,6 +157,15 @@ public class ObjectFile {
 		codeSize = position;
 	}
 
+	/**
+	 * Add a byte sequence to the ROM area as a software signature.
+	 * @param signature  a byte array containing the signature to add
+	*/
+	public void addSignature(byte[] signature) {
+        AsmData sig = new AsmData(signature);
+        romArea.add(sig);
+	}
+
 	public String addString(String text) {
 		return strings.addString(text);
 	}

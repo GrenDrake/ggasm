@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Assemble {
+    public static final int majorVersion = 0;
+    public static final int minorVersion = 5;
+    public static final int patchVersion = 0;
+
 	private ObjectFile asm;
 	private String inputFile;
 	private String filePath;

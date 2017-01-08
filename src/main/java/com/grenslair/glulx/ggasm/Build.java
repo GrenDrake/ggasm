@@ -9,9 +9,11 @@ public class Build {
 
 	public Build() {
 		asm = new ObjectFile();
-		asm.addToRom(true);
-		asm.addLine(new AsmData(0x47474153, true));
-		asm.addToRom(false);
+        byte[] signature = {
+            'G', 'G', 'A', 'S', 'M',
+            Assemble.majorVersion, Assemble.minorVersion, Assemble.patchVersion
+        };
+        asm.addSignature(signature);
 		new HashSet<String>();
 	}
 
