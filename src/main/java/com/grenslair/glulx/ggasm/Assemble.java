@@ -48,7 +48,7 @@ public class Assemble {
 	}
 
     /**
-     * Replace escape characters within the provided text with their real 
+     * Replace escape characters within the provided text with their real
      * versions
      * @param text  the string to replace escape codes within
      * @return the string after escape evaluation is complete
@@ -137,7 +137,7 @@ public class Assemble {
 				}
 				continue;
 			}
-            
+
             // parse character constants
 			if (lexChar() == '\'') {
 				lexNext();
@@ -152,7 +152,7 @@ public class Assemble {
 				lexNext();
 				String text = fileContent.substring(start,end);
                 text = doEscapes(text);
-                
+
                 if (text.length() == 0) {
 					throw new AsmException(inputFile+"("+lexerLine+"): empty character constant.");
                 }
@@ -177,49 +177,6 @@ public class Assemble {
 				lexNext();
 				String text = fileContent.substring(start,end);
                 text = doEscapes(text);
-/*				StringBuilder sb = new StringBuilder();
-				// TODO update for unicode
-				for (int i = 0; i < text.length(); ++i) {
-					if (text.charAt(i) == '\\') {
-						++i;
-						switch(text.charAt(i)) {
-							case '0':  // nothing
-								break;
-							case '\\': // backslash
-							case '"':  // quote
-                            case '\'': // single quote
-								sb.append(text.charAt(i));
-								break;
-							case 'n':  // newline
-								sb.append('\n');
-								break;
-							case 'r':  // return
-								sb.append('\r');
-								break;
-							case 't':  // tab
-								sb.append('\t');
-								break;
-							case 'x':  // character by hex code
-								++i;
-								if (i >= text.length() || !isHexDigit(text.charAt(i))) {
-									throw new AsmException(inputFile+"("+lexerLine+"): Unexpected end of escape in \\xXX");
-								}
-								start = i;
-								while (i < text.length() && isHexDigit(text.charAt(i))) {
-									++i;
-								}
-								int v = Integer.parseInt(text.substring(start,i), 16);
-								System.err.println(v);
-								sb.appendCodePoint(v);
-								--i;
-								break;
-							default:   // unknown
-								throw new AsmException(inputFile+"("+lexerLine+"): Unknown character escape \\" + text.charAt(i));
-						}
-					} else {
-						sb.append(text.charAt(i));
-					}
-				}*/
 
 				tokenList.add(new Token(inputFile, lexerLine, text, Token.Type.String));
 
@@ -381,7 +338,14 @@ public class Assemble {
 			// check for directives
 			if (stmt.get(0).equalTo("stackSize")) {
 				lineMatches(stmt, true, Token.Type.Integer);
-				asm.setStackSize(stmt.get(1).getIntValue());
+				int stackSize = ObjectFile.roundUp(stmt.get(1).getIntValue());
+				if (stackSize != stmt.get(1).getIntValue()) {
+                    System.err.println(stmt.get(0).getSource()+": stack size "
+                        + stmt.get(1).getIntValue()
+                        + " is not a multiple up 256; round up to "
+                        + stackSize + ".");
+				}
+				asm.setStackSize(stackSize);
 				continue;
 			}
 			if (stmt.get(0).equalTo("toROM")) {
