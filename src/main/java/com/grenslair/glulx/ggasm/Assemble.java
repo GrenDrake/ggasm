@@ -191,10 +191,15 @@ public class Assemble {
 					}
 					lexNext();
 				}
+				String unparsedNumber = fileContent.substring(start,lexPos);
 				if (parseFloat) {
-					tokenList.add(new Token(inputFile, lexerLine, Float.parseFloat(fileContent.substring(start,lexPos))));
+					tokenList.add(new Token(inputFile, lexerLine, Float.parseFloat(unparsedNumber)));
 				} else {
-					tokenList.add(new Token(inputFile, lexerLine, Integer.parseInt(fileContent.substring(start,lexPos), 10)));
+                    if (unparsedNumber.codePointAt(0) == '-') {
+                        tokenList.add(new Token(inputFile, lexerLine, Integer.parseInt(unparsedNumber, 10)));
+                    } else {
+                        tokenList.add(new Token(inputFile, lexerLine, Integer.parseUnsignedInt(unparsedNumber, 10)));
+					}
 				}
 
 				// parse hex numbers
@@ -204,7 +209,7 @@ public class Assemble {
 				while (lexHasNext() && isHexDigit(lexChar())) {
 					lexNext();
 				}
-				tokenList.add(new Token(inputFile, lexerLine, Integer.parseInt(fileContent.substring(start,lexPos), 16)));
+				tokenList.add(new Token(inputFile, lexerLine, Integer.parseUnsignedInt(fileContent.substring(start,lexPos), 16)));
 
 				// parse identifiers
 			} else if (isIdentifier(lexChar(), true)) {
