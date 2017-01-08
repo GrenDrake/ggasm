@@ -131,7 +131,12 @@ public class ObjectFile {
 		}
 
 		romEnd = roundUp(position);
-		romArea.add(new AsmData(romEnd - position));
+		int romPadding = romEnd - position;
+		if (romPadding >= 11) {
+            romArea.add(new AsmData(romPadding, new byte[]{'R', 'O', 'M', ' ', 'P', 'A', 'D', 'D', 'I', 'N', 'G'}));
+		} else {
+            romArea.add(new AsmData(romPadding));
+		}
 		position = romEnd;
 
 		for (AsmLine i : instructions) {
