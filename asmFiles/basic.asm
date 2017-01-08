@@ -163,5 +163,20 @@ binDataLoop:
 	_call printFloat 7.54354 0
 	streamchar '\n'
 
+	; display a poetry quote as a farewell
+	streamstr "\n\nA Quote:\n"
+	_glk glksetstyle styleEmphasized 0
+	streamstr kiplingIfQuote
+    _glk glksetstyle styleNormal 0
+    streamstr "- Rudyard Kipling, If-\n"
+
 	; all done; return
     return 0
+
+; the real purpose of this quote is to demonstrate and test the use of
+; multiline strings
+addString kiplingIfQuote "If you can make one heap of all your winnings\n
+                          And risk it on one turn of pitch-and-toss,\n
+                          And lose, and start again at your beginnings\n
+                          And never breathe a word about your loss\n"
+

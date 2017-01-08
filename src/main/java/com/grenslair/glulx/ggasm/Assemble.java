@@ -53,14 +53,44 @@ public class Assemble {
 
     /**
      * Replace escape characters within the provided text with their real
-     * versions
+     * versions. This will also remove any actual newlines and stray whitespace
+     * surronding them (such that would result from a multiline string).
+     * TODO update for unicode handling
      * @param text  the string to replace escape codes within
      * @return the string after escape evaluation is complete
      */
     public String doEscapes(String text) throws AsmException {
+        boolean didWhitespace = false;
+        boolean lastWasNewline = false;
 		StringBuilder sb = new StringBuilder();
-		// TODO update for unicode
+
 		for (int i = 0; i < text.length(); ++i) {
+            // check to see if we start a new line; if so, compress all the
+            // whitespace to a single space
+            if (Character.isWhitespace(text.charAt(i))) {
+                if (!didWhitespace) {
+                    int j;
+                    boolean compress = false;
+                    for (j = i; j < text.length() && Character.isWhitespace(text.charAt(j)); ++j) {
+                        if (text.charAt(j) == '\n') {
+                            compress = true;
+                        }
+                    }
+                    if (compress) {
+                        if (!lastWasNewline) {
+                            sb.append(" ");
+                        }
+                        i = j - 1;
+                        continue;
+                    } else {
+                        didWhitespace = true;
+                    }
+                }
+            } else {
+                didWhitespace = false;
+            }
+            lastWasNewline = false;
+            // handle the actual string escapes
 			if (text.charAt(i) == '\\') {
 				++i;
 				switch(text.charAt(i)) {
@@ -73,6 +103,7 @@ public class Assemble {
 						break;
 					case 'n':  // newline
 						sb.append('\n');
+						lastWasNewline = true;
 						break;
 					case 'r':  // return
 						sb.append('\r');
