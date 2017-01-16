@@ -409,7 +409,9 @@ public class Assemble {
                 lineMatches(stmt, true, Token.Type.Identifier, Token.Type.Identifier, Token.Type.String);
                 String includedFile = filePath + stmt.get(3).getStringValue();
                 System.err.println("including \""+includedFile+"\" from \""+inputFile+"\" into glulx file.");
-				asm.addLine(new AsmLabel(stmt.get(1).getStringValue()));
+                if (!stmt.get(1).equalTo("_")) {
+                    asm.addLine(new AsmLabel(stmt.get(1).getStringValue()));
+                }
                 try {
         			Path path = Paths.get(includedFile);
         			byte[] fileBytes;
@@ -466,25 +468,33 @@ public class Assemble {
 			// check for data statements
 			if (stmt.get(0).equalTo("string")) {
 				lineMatches(stmt, true, Token.Type.Identifier, Token.Type.String);
-				asm.addLine(new AsmLabel(stmt.get(1).getStringValue(), AsmLabel.Type.String));
+                if (!stmt.get(1).equalTo("_")) {
+                    asm.addLine(new AsmLabel(stmt.get(1).getStringValue(), AsmLabel.Type.String));
+                }
 				asm.addLine(new AsmData(stmt.get(2).getStringValue(), AsmData.StringType.Automatic));
 				continue;
 			}
 			if (stmt.get(0).equalTo("basicString")) {
 				lineMatches(stmt, true, Token.Type.Identifier, Token.Type.String);
-				asm.addLine(new AsmLabel(stmt.get(1).getStringValue(), AsmLabel.Type.String));
+                if (!stmt.get(1).equalTo("_")) {
+                    asm.addLine(new AsmLabel(stmt.get(1).getStringValue(), AsmLabel.Type.String));
+                }
 				asm.addLine(new AsmData(stmt.get(2).getStringValue(), AsmData.StringType.Basic));
 				continue;
 			}
 			if (stmt.get(0).equalTo("unicodeString")) {
 				lineMatches(stmt, true, Token.Type.Identifier, Token.Type.String);
-				asm.addLine(new AsmLabel(stmt.get(1).getStringValue(), AsmLabel.Type.String));
+                if (!stmt.get(1).equalTo("_")) {
+                    asm.addLine(new AsmLabel(stmt.get(1).getStringValue(), AsmLabel.Type.String));
+                }
 				asm.addLine(new AsmData(stmt.get(2).getStringValue(), AsmData.StringType.Unicode));
 				continue;
 			}
 			if (stmt.get(0).equalTo("bytes")) {
 				lineMatches(stmt, false, Token.Type.Identifier);
-				asm.addLine(new AsmLabel(stmt.get(1).getStringValue(), AsmLabel.Type.Data));
+                if (!stmt.get(1).equalTo("_")) {
+                    asm.addLine(new AsmLabel(stmt.get(1).getStringValue(), AsmLabel.Type.Data));
+                }
 				byte[] data = new byte[stmt.size()-2];
 				buildBytes(data, stmt, 2);
 				asm.addLine(new AsmData(data));
@@ -492,7 +502,9 @@ public class Assemble {
 			}
 			if (stmt.get(0).equalTo("bytesFixed")) {
 				lineMatches(stmt, false, Token.Type.Identifier, Token.Type.Integer);
-				asm.addLine(new AsmLabel(stmt.get(1).getStringValue(), AsmLabel.Type.Data));
+                if (!stmt.get(1).equalTo("_")) {
+                    asm.addLine(new AsmLabel(stmt.get(1).getStringValue(), AsmLabel.Type.Data));
+                }
 				if (stmt.get(2).getIntValue() < stmt.size() - 3) {
 					throw new AsmException(stmt.get(0).getSource()+"): bytesFixed has size of " + stmt.get(2).getIntValue() + ", but " + (stmt.size() - 3) + " values.");
 				}

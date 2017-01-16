@@ -28,7 +28,7 @@ Strings included through the addString directive or directly as instruction oper
 
 ### Directives
 
-Directives must always occur on their own line. Typically, a directive instructions the assembler to do something rather than being directly assembled into output. 
+Directives must always occur on their own line. Typically, a directive instructions the assembler to do something rather than being directly assembled into output. Most directives can be given the label _ which will make them anonymous (i.e. they won't add a label).
 
 **addString \<label-name\> "string text"** Add a string to the string table and give it the specified label.
 
