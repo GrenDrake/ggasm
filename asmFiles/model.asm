@@ -3,6 +3,11 @@ include "glk.asm"
 ; model.c in GGASM ported by Gren Drake; original copyright statement
 ; and file description are preserved below. This port is made available under
 ; the same terms.
+;
+; One slight difference between this version and the original model.c is that
+; I have used a search/jump table for handling the player's commands rather 
+; than a list of string comparisons. This is as much to demonstrate the ability
+; to do this as it is for any other reason.
 
 ; model.c: Model program for Glk API, version 0.5.
 ;  Designed by Andrew Plotkin <erkyrath@eblong.com>
@@ -189,76 +194,34 @@ function main 3
         jump trimInitialLoop
     doneTrimInitial:
 
-        _call stringCompare commandbuf helpCmd sp
-        jeq sp 0 doHelpCommand
-        _call stringCompare commandbuf jumpCmd sp
-        jeq sp 0 doJumpCommand
-        _call stringCompare commandbuf moveCmd sp
-        jeq sp 0 doMoveCommand
-        _call stringCompare commandbuf quitCmd sp
-        jeq sp 0 doQuitCommand
-        _call stringCompare commandbuf quoteCmd sp
-        jeq sp 0 doQuoteCommand
-        _call stringCompare commandbuf restoreCmd sp
-        jeq sp 0 doRestoreCommand
-        _call stringCompare commandbuf saveCmd sp
-        jeq sp 0 doSaveCommand
-        _call stringCompare commandbuf scriptCmd sp
-        jeq sp 0 doScriptCommand
-        _call stringCompare commandbuf yadaCmd sp
-        jeq sp 0 doYadaCommand
-        _call stringCompare commandbuf unscriptCmd sp
-        jeq sp 0 doUnscriptCommand
-
-    ; unkonwn command
+        linearsearch commandbuf VOCAB_WORD_SIZE vocabTable VOCAB_SIZE -1 0 3 #0
+        jeq #0 0 unknownCommand
+        aload #0 3 #0
+        _call #0 0
+        jump mainLoopBegin
+        
+    unknownCommand:
         streamstr "I don't understand the command \""
         _call printBuffer commandbuf 0
         streamstr "\".\n"
         jump mainLoopBegin
 
-    doHelpCommand:
-        _call verbHelp 0
-        jump mainLoopBegin
-    doJumpCommand:
-        _call verbJump 0
-        jump mainLoopBegin
-    doMoveCommand:
-        _call verbMove 0
-        jump mainLoopBegin
-    doQuitCommand:
-        _call verbQuit 0
-        jump mainLoopBegin
-    doQuoteCommand:
-        _call verbQuote 0
-        jump mainLoopBegin
-    doRestoreCommand:
-        _call verbRestore 0
-        jump mainLoopBegin
-    doSaveCommand:
-        _call verbSave 0
-        jump mainLoopBegin
-    doScriptCommand:
-        _call verbScript 0
-        jump mainLoopBegin
-    doUnscriptCommand:
-        _call verbUnscript 0
-        jump mainLoopBegin
-    doYadaCommand:
-        _call verbYada 0
-        jump mainLoopBegin
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; the verb table
-bytes helpCmd     'h' 'e' 'l' 'p' 0
-bytes jumpCmd     'j' 'u' 'm' 'p' 0
-bytes moveCmd     'm' 'o' 'v' 'e' 0
-bytes quitCmd     'q' 'u' 'i' 't' 0
-bytes quoteCmd    'q' 'u' 'o' 't' 'e' 0
-bytes restoreCmd  'r' 'e' 's' 't' 'o' 'r' 'e' 0
-bytes saveCmd     's' 'a' 'v' 'e' 0
-bytes scriptCmd   's' 'c' 'r' 'i' 'p' 't' 0
-bytes yadaCmd     'y' 'a' 'd' 'a' 0
-bytes unscriptCmd 'u' 'n' 's' 'c' 'r' 'i' 'p' 't' 0
+constant VOCAB_SIZE      16
+constant VOCAB_WORD_SIZE 12
+vocabTable:
+words _ $68656C70 $0        $0 verbHelp
+words _ $6A756D70 $0        $0 verbJump
+words _ $6D6F7665 $0        $0 verbMove
+words _ $71756974 $0        $0 verbQuit
+words _ $71756F74 $65000000 $0 verbQuote
+words _ $72657374 $6F726500 $0 verbRestore
+words _ $73617665 $0        $0 verbSave
+words _ $73637269 $0        $0 verbScript
+words _ $756E7363 $72697074 $0 verbUnscript
+words _ $79616461 $0        $0 verbYada
+words _ $0        $0        $0 0 ; end of table
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; the verb functions
