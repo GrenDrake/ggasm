@@ -5,15 +5,23 @@ import java.util.ArrayList;
 
 public class AsmVarData extends AsmLine {
 
-	private Operand itemCount;
+	private int itemCount;
 	private ArrayList<Operand> items;
 
-	public AsmVarData() {
-		items = new ArrayList<Operand>();
-	}
+    public AsmVarData() {
+        items = new ArrayList<Operand>();
+        itemCount = -1;
+    }
+    public AsmVarData(int size) {
+        items = new ArrayList<Operand>();
+        itemCount = size;
+    }
 
-	public void addItem(Operand newItem) {
+	public void addItem(Operand newItem) throws AsmException {
 		if (newItem != null) {
+		    if (itemCount > 0 && items.size() >= itemCount) {
+		        throw new AsmException("Too many items for wordsFixed; only " + itemCount + " expected."); 
+		    }
 			items.add(newItem);
 		}
 	}
@@ -28,14 +36,17 @@ public class AsmVarData extends AsmLine {
 	            code.putInt(item.getValue());
 	        }
 	    }
+	    for (int i = items.size(); i < itemCount; ++i) {
+	        code.putInt(0);
+	    }
 	}
 
 	@Override
 	public int getSize() {
-		if (itemCount == null) {
+		if (itemCount <= 0) {
 			return items.size() * 4;
 		}
-		return 0;
+		return itemCount * 4;
 	}
 
 	@Override

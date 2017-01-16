@@ -513,19 +513,36 @@ public class Assemble {
 				asm.addLine(new AsmData(data));
 				continue;
 			}
-			if (stmt.get(0).equalTo("words")) {
+            if (stmt.get(0).equalTo("words")) {
                 lineMatches(stmt, false, Token.Type.Identifier);
                 if (!stmt.get(1).equalTo("_")) {
                     asm.addLine(new AsmLabel(stmt.get(1).getStringValue(), AsmLabel.Type.Data));
                 }
-			    AsmVarData avd = new AsmVarData();
-			    avd.setObjectFile(asm);
-				for (int i = 2; i < stmt.size(); ++i) {
-				    avd.addItem(new Operand(stmt.get(i), asm));
-				}
-				asm.addLine(avd);
-				continue;
-			}
+                AsmVarData avd = new AsmVarData();
+                avd.setObjectFile(asm);
+                for (int i = 2; i < stmt.size(); ++i) {
+                    avd.addItem(new Operand(stmt.get(i), asm));
+                }
+                asm.addLine(avd);
+                continue;
+            }
+            if (stmt.get(0).equalTo("wordsFixed")) {
+                lineMatches(stmt, false, Token.Type.Identifier, Token.Type.Integer);
+                if (!stmt.get(1).equalTo("_")) {
+                    asm.addLine(new AsmLabel(stmt.get(1).getStringValue(), AsmLabel.Type.Data));
+                }
+                int size = stmt.get(2).getIntValue();
+                if (size <= 0) {
+                    throw new AsmException(stmt.get(0).getSource()+": wordsFixed must have size of at least one");
+                }
+                AsmVarData avd = new AsmVarData(size);
+                avd.setObjectFile(asm);
+                for (int i = 3; i < stmt.size(); ++i) {
+                    avd.addItem(new Operand(stmt.get(i), asm));
+                }
+                asm.addLine(avd);
+                continue;
+            }
 			
 			
 			// check for a shortcut mnemonic (_glk or _call)
