@@ -6,6 +6,7 @@ build
 # Ignore Eclipse Stuff
 .project
 .settings
+.classpath
 # Ignore generated output
 *.ulx
 symbols.txt
