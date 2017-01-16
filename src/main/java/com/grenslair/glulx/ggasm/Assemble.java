@@ -501,6 +501,21 @@ public class Assemble {
 				asm.addLine(new AsmData(data));
 				continue;
 			}
+			if (stmt.get(0).equalTo("words")) {
+                lineMatches(stmt, false, Token.Type.Identifier);
+                if (!stmt.get(1).equalTo("_")) {
+                    asm.addLine(new AsmLabel(stmt.get(1).getStringValue(), AsmLabel.Type.Data));
+                }
+			    AsmVarData avd = new AsmVarData();
+			    avd.setObjectFile(asm);
+				for (int i = 2; i < stmt.size(); ++i) {
+				    avd.addItem(new Operand(stmt.get(i), asm));
+				}
+				asm.addLine(avd);
+				continue;
+			}
+			
+			
 			// check for a shortcut mnemonic (_glk or _call)
 			if (stmt.get(0).equalTo("_glk") || stmt.get(0).equalTo("_call")) {
                 doShortcutCall(stmt);
