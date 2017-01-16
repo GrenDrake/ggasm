@@ -43,7 +43,7 @@ public class Operand {
     /**
     * Create a new operand whose value is a symbol reference and whose mode is
     * Constant
-    * @param symbol the name of the symbol repersenting this operand's value
+    * @param symbol the name of the symbol representing this operand's value
     */
     public Operand(String symbol) {
         this(symbol, Mode.Constant);
@@ -52,7 +52,7 @@ public class Operand {
     /**
     * Create a new operand whose value is a symbol reference and whose mode is
     * as specified.
-    * @param symbol the name of the symbol repersenting this operand's value
+    * @param symbol the name of the symbol representing this operand's value
     * @param mode the mode of the new operand
     */
     public Operand(String symbol, Mode mode) {
@@ -122,7 +122,7 @@ public class Operand {
                 }
                 break;
             default:
-                throw new AsmException("Cannot create Operand from token type " + token.getType());
+                throw new AsmException(token.getSource() + ": Cannot create Operand from token type " + token.getType());
         }
         resize();
     }

@@ -89,7 +89,7 @@ public class StringTable {
     				}
     			}
     			code.add(new AsmLabel(table.get(key),AsmLabel.Type.String));
-    			code.add(new AsmData(key, AsmData.StringType.Automatic));
+    			code.add(new AsmData(null, key, AsmData.StringType.Automatic));
     		}
         } catch (AsmException e) {
             // this should never happen;

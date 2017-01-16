@@ -471,7 +471,9 @@ public class Assemble {
                 if (!stmt.get(1).equalTo("_")) {
                     asm.addLine(new AsmLabel(stmt.get(1).getStringValue(), AsmLabel.Type.String));
                 }
-				asm.addLine(new AsmData(stmt.get(2).getStringValue(), AsmData.StringType.Automatic));
+                AsmData ad = new AsmData(stmt.get(0), stmt.get(2).getStringValue(), AsmData.StringType.Automatic);
+                ad.setSource(stmt.get(0));
+                asm.addLine(ad);
 				continue;
 			}
 			if (stmt.get(0).equalTo("basicString")) {
@@ -479,7 +481,9 @@ public class Assemble {
                 if (!stmt.get(1).equalTo("_")) {
                     asm.addLine(new AsmLabel(stmt.get(1).getStringValue(), AsmLabel.Type.String));
                 }
-				asm.addLine(new AsmData(stmt.get(2).getStringValue(), AsmData.StringType.Basic));
+                AsmData ad = new AsmData(stmt.get(0), stmt.get(2).getStringValue(), AsmData.StringType.Basic);
+                ad.setSource(stmt.get(0));
+                asm.addLine(ad);
 				continue;
 			}
 			if (stmt.get(0).equalTo("unicodeString")) {
@@ -487,7 +491,9 @@ public class Assemble {
                 if (!stmt.get(1).equalTo("_")) {
                     asm.addLine(new AsmLabel(stmt.get(1).getStringValue(), AsmLabel.Type.String));
                 }
-				asm.addLine(new AsmData(stmt.get(2).getStringValue(), AsmData.StringType.Unicode));
+                AsmData ad = new AsmData(stmt.get(0), stmt.get(2).getStringValue(), AsmData.StringType.Unicode);
+                ad.setSource(stmt.get(0));
+                asm.addLine(ad);
 				continue;
 			}
 			if (stmt.get(0).equalTo("bytes")) {
@@ -497,7 +503,9 @@ public class Assemble {
                 }
 				byte[] data = new byte[stmt.size()-2];
 				buildBytes(data, stmt, 2);
-				asm.addLine(new AsmData(data));
+                AsmData ad = new AsmData(data);
+                ad.setSource(stmt.get(0));
+                asm.addLine(ad);
 				continue;
 			}
 			if (stmt.get(0).equalTo("bytesFixed")) {
@@ -510,7 +518,9 @@ public class Assemble {
 				}
 				byte[] data = new byte[stmt.get(2).getIntValue()];
 				buildBytes(data, stmt, 3);
-				asm.addLine(new AsmData(data));
+				AsmData ad = new AsmData(data);
+                ad.setSource(stmt.get(0));
+				asm.addLine(ad);
 				continue;
 			}
             if (stmt.get(0).equalTo("words")) {
@@ -520,6 +530,7 @@ public class Assemble {
                 }
                 AsmVarData avd = new AsmVarData();
                 avd.setObjectFile(asm);
+                avd.setSource(stmt.get(0));
                 for (int i = 2; i < stmt.size(); ++i) {
                     avd.addItem(new Operand(stmt.get(i), asm));
                 }
@@ -537,6 +548,7 @@ public class Assemble {
                 }
                 AsmVarData avd = new AsmVarData(size);
                 avd.setObjectFile(asm);
+                avd.setSource(stmt.get(0));
                 for (int i = 3; i < stmt.size(); ++i) {
                     avd.addItem(new Operand(stmt.get(i), asm));
                 }
@@ -560,6 +572,7 @@ public class Assemble {
 				}
 
 				AsmInstruction ai = new AsmInstruction(m);
+                ai.setSource(stmt.get(0));
 				for (int i = 1; i < stmt.size(); ++i) {
 					ai.addOperand(new Operand(stmt.get(i), asm));
 				}

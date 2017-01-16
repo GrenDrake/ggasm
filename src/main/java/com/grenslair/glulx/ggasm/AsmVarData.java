@@ -8,19 +8,31 @@ public class AsmVarData extends AsmLine {
 	private int itemCount;
 	private ArrayList<Operand> items;
 
+	/**
+	 * Create a variable sized data segment
+	 */
     public AsmVarData() {
         items = new ArrayList<Operand>();
         itemCount = -1;
     }
+    /**
+     * Create a fixed size data segment/
+     * @param size  the size of the data segment in words (4 bytes)
+     */
     public AsmVarData(int size) {
         items = new ArrayList<Operand>();
         itemCount = size;
     }
 
+    /**
+     * Add a new item to the data segment. If this is a fixed size data 
+     * segment and the addition would take us over the fixed size, throw an AsmException. 
+     * @param newItem  the item to be added to the data segment
+     */
 	public void addItem(Operand newItem) throws AsmException {
 		if (newItem != null) {
 		    if (itemCount > 0 && items.size() >= itemCount) {
-		        throw new AsmException("Too many items for wordsFixed; only " + itemCount + " expected."); 
+		        throw new AsmException(getSource() + ": Too many items for wordsFixed; only " + itemCount + " expected."); 
 		    }
 			items.add(newItem);
 		}
@@ -41,6 +53,10 @@ public class AsmVarData extends AsmLine {
 	    }
 	}
 
+	/**
+	 * Get the size of this data segment in bytes. If a size has been provided, it is that size, otherwise it is the number of items * 4 bytes.
+	 * @return the number of bytes required for this object
+	 */
 	@Override
 	public int getSize() {
 		if (itemCount <= 0) {
@@ -51,8 +67,17 @@ public class AsmVarData extends AsmLine {
 
 	@Override
     public String toString() {
-        return "AsmVarData [itemCount=" + itemCount + ", items=" + items + ", getPosition()=" + getPosition()
-                + ", getSourceLine()=" + getSourceLine() + ", getSourceFile()=" + getSourceFile() + "]";
+	    StringBuilder sb = new StringBuilder();
+	    sb.append("[VARDATA:");
+	    for (Operand item : items) {
+            sb.append(" ");
+	        sb.append(item);
+	    }
+	    for (int i = items.size(); i < itemCount; ++i) {
+	        sb.append(" 0");
+	    }
+	    sb.append("]");
+	    return sb.toString();
     }
 
 }

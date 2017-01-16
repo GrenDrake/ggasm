@@ -28,7 +28,7 @@ public class AsmInstruction extends AsmLine {
 		for (Operand o : operands) {
 			if (o.isSymbol()) {
 				if (!getObjectFile().isSymbolKnown(o.getSymbol())) {
-					throw new AsmException("Undefined symbol \""+o.getSymbol()+"\"");
+					throw new AsmException(getSource() + ": Undefined symbol \""+o.getSymbol()+"\"");
 				}
 				int value = getObjectFile().getSymbolValue(o.getSymbol());
 				o.setValue(value);

@@ -11,6 +11,10 @@ public abstract class AsmLine {
     public AsmLine() {
         position = 0;
     }
+    public AsmLine(Token token) {
+        position = 0;
+        setSource(token);
+    }
     public void setObjectFile(ObjectFile owner) {
         this.owner = owner;
     }
@@ -24,9 +28,14 @@ public abstract class AsmLine {
         return position;
     }
 
-    public void setSource(String file, int line) {
-        sourceFile = file;
-        sourceLine = line;
+    public void setSource(Token token) {
+        if (token != null) {
+            sourceFile = token.getFile();
+            sourceLine = token.getLine();
+        }
+    }
+    public String getSource() {
+        return sourceFile+"("+sourceLine+")";
     }
     public int getSourceLine() {
         return sourceLine;
