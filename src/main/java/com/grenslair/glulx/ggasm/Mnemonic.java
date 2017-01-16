@@ -119,33 +119,27 @@ public class Mnemonic {
         aList.put("quit",          new Mnemonic("quit",          0x120, 0));
         aList.put("verify",        new Mnemonic("verify",        0x121, 1));
 
-        aList.put("setiosys",      new Mnemonic("setiosys",      0x149, 2));
+        aList.put("restart",       new Mnemonic("restart",       0x122, 0));
+        aList.put("save",          new Mnemonic("save",          0x123, 2));
+        aList.put("restore",       new Mnemonic("restore",       0x124, 2));
+        aList.put("saveundo",      new Mnemonic("saveundo",      0x125, 1));
+        aList.put("restoreundo",   new Mnemonic("restoreundo",   0x126, 1));
+        aList.put("protect",       new Mnemonic("protect",       0x127, 2));
         aList.put("glk",           new Mnemonic("glk",           0x130, 3));
-
-
-/*
-instruction_code_t CodeInstruction::instructionCodes[] = {
-	{ "restart",		0x122,	0 },
-	{ "save",			0x123,	2 },
-	{ "restore",		0x124,	2 },
-	{ "saveundo",		0x125,	1 },
-	{ "restoreundo",	0x126,	1 },
-	{ "protect",		0x127,	2 },
-	{ "glk",			0x130,	3 },
-	{ "getstringtbl",	0x140,	1 },
-	{ "setstringtbl",	0x141,	1 },
-	{ "getiosys",		0x148,	2 },
-	{ "setiosys",		0x149,	2 },
-	{ "linearsearch",	0x150,	8 },
-	{ "binarysearch",	0x151,	8 },
-	{ "linkedsearch",	0x152,	7 },
-	{ "mzero",			0x170,	2 },
-	{ "mcopy",			0x171,	3 },
-	{ "malloc",			0x178,	2 },
-	{ "mfree",			0x179,	1 },
-	{ "accelfunc",		0x180,	2 },
-	{ "accelparam",		0x181,	2 },
-*/
+        aList.put("getstringtbl",  new Mnemonic("getstringtbl",  0x140, 1));
+        aList.put("setstringtbl",  new Mnemonic("setstringtbl",  0x141, 1));
+        aList.put("getiosys",      new Mnemonic("getiosys",      0x148, 2));
+        aList.put("setiosys",      new Mnemonic("setiosys",      0x149, 2));
+        
+        aList.put("linearsearch",  new Mnemonic("linearsearch",  0x150, 8));
+        aList.put("binarysearch",  new Mnemonic("binarysearch",  0x151, 8));
+        aList.put("linkedsearch",  new Mnemonic("linkedsearch",  0x152, 7));
+        aList.put("mzero",         new Mnemonic("mzero",         0x170, 2));
+        aList.put("mcopy",         new Mnemonic("mcopy",         0x171, 3));
+        aList.put("malloc",        new Mnemonic("malloc",        0x178, 2));
+        aList.put("mfree",         new Mnemonic("mfree",         0x179, 1));
+        aList.put("accelfunc",     new Mnemonic("accelfunc",     0x180, 2));
+        aList.put("accelparam",    new Mnemonic("accelparam",    0x181, 2));
 
         list = Collections.unmodifiableMap(aList);
     }
