@@ -12,10 +12,6 @@ In its current version, GGASM is fully capable of transforming source files into
 
 Floating point support is currently experimental and needs further testing.
 
-There are a few notable features that have not yet been implemented yet:
-
-* Labels and constants cannot currently be used in data statements
-
 ## Building
 
 To build GGASM, you should use Gradle; the Gradle wrapper is included (either gradlew or gradlew.bat depending on platform).
