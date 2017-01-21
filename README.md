@@ -32,9 +32,11 @@ Directives must always occur on their own line. Typically, a directive instructi
 
 **addString \<label-name\> "string text"** Add a string to the string table and give it the specified label.
 
+**basicString \<label-name\> "string text"** Include a string at the current point in the file; this string will always use one byte per character and will produce an error if values outside of 7-bit ASCII are included. See also, *string* and *unicodeString*.
+
 **bytes \<label-name\> [\<byte value\>+]** Add a sequence of raw bytes into the game file at the current location and create the specified label. Each byte must be a valid 8-bit value.
 
-**bytes \<label-name\> \<field-length\> [\<byte value\>+]** As with bytes above, but will always insert the specified number of bytes, padding with zeros as necessary and issuing an error if more than *field-length* bytes are specified.
+**bytes \<label-name\> \<field-length\> [\<byte value\>+]** As with *bytes* above, but will always insert the specified number of bytes, padding with zeros as necessary and issuing an error if more than *field-length* bytes are specified.
 
 **constant \<name\> \<value\>** Creates a named constant with the specified value. The value must be numeric.
 
@@ -48,9 +50,15 @@ Directives must always occur on their own line. Typically, a directive instructi
 
 **stkfunction \<label-name\> \<local-count\>** Create a function (as per *function* above), but put arguments passed on the stack rather than into the local variables. The argument count will also be pushed onto the stack.
 
-**string \<label-name\> "string text"** Include a string at the current point in the file; unlike strings stored in the string table, this string can be altered by the game during play. Currently the assembler will automatically choose between using a basic or Unicode string, but later versions will allow the type to the specified.
+**string \<label-name\> "string text"** Include a string at the current point in the file; unlike strings stored in the string table, this string can be altered by the game during play. See also, *basicString* and *unicodeString*.
 
 **toROM** and **endROM** Everything between these two directives will be added to the game file's ROM area rather than to the main memory area.
+
+**unicodeString \<label-name\> "string text"** Include a string at the current point in the file; this string will always use four bytes per character and is suitable for containing unicode characters. See also, *basicString* and *string*.
+
+**wordsFixed \<label-name\> [\<word value\>+]** Add a sequence of words (4-byte values) into the game file at the current location and create the specified label. Each provided value will occupy a full word regardless of value. Labels and constants may be used as values and will be translated into the appropriate 4-byte values.
+
+**wordsFixed \<label-name\> \<number of words\> [\<word value\>+]** As *words* above, but the data sequence will always have the specified number of words. Note that the size is specified as words, NOT bytes.
 
 ### Labels
 
