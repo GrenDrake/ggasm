@@ -22,6 +22,14 @@ A source file is made up of three kinds of statements: Directives, Labels, and I
 
 Strings included through the addString directive or directly as instruction operands will be added to the string table. This table will be put into the ROM area of the game file and thus cannot be modified. Currently strings are set to basic or Unicode as appropriate, but in future versions will be Huffman encoded instead.
 
+### Comments
+
+Comments can be added to source files that will cause GGASM to ignore everything in the commented area. There are two kinds of comment: end of line and block.
+
+End of line comments can be added using a semicolon `;` or two slashes `//`.
+
+Block comments begin with `/*` and end with `*/`
+
 ### Directives
 
 Directives must always occur on their own line. Typically, a directive instructions the assembler to do something rather than being directly assembled into output. Most directives can be given the label _ which will make them anonymous (i.e. they won't add a label).

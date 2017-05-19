@@ -165,11 +165,25 @@ public class Assemble {
             }
 
             // end-of-line comment
-            if (lexChar() == ';') {
+            if (lexChar() == ';' || (lexChar() == '/' && lexPeek() == '/')) {
                 tokenList.add(new Token(inputFile, lexerLine, "", Token.Type.End));
                 while (lexChar() != 0 && lexChar() != '\n') {
                     lexNext();
                 }
+                continue;
+            }
+            // block comments
+            if (lexChar() == '/' && lexPeek() == '*') {
+                lexNext();
+                lexNext();
+                while (lexChar() != 0 && (lexChar() != '*' || lexPeek() != '/')) {
+                    lexNext();
+                }
+                if (lexChar() == 0) {
+                    throw new AsmException(inputFile + "(" + lexerLine + "): Unterminated block comment.");
+                }
+                lexNext();
+                lexNext();
                 continue;
             }
 
@@ -297,6 +311,14 @@ public class Assemble {
 
     private int lexPrev() {
         return lexerLast;
+    }
+
+    private int lexPeek() {
+        int tmpPos = lexPos + Character.charCount(lexChar());
+        if (tmpPos < fileLength) {
+            return fileContent.codePointAt(tmpPos);
+        }
+        return 0;
     }
 
     /**
