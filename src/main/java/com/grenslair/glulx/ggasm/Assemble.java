@@ -148,7 +148,7 @@ public class Assemble {
         lexPos = 0;
         lexerLine = 1;
         int start = 0, end;
-        while (lexHasNext()) {
+        while (lexChar() != 0) {
 
             // parse end of statement
             if (lexChar() == '\n') {
@@ -158,7 +158,7 @@ public class Assemble {
             }
 
             if (Character.isWhitespace(lexChar())) {
-                while (lexHasNext() && lexChar() != '\n' && Character.isWhitespace(lexChar())) {
+                while (lexChar() != '\n' && Character.isWhitespace(lexChar())) {
                     lexNext();
                 }
                 continue;
@@ -167,7 +167,7 @@ public class Assemble {
             // end-of-line comment
             if (lexChar() == ';') {
                 tokenList.add(new Token(inputFile, lexerLine, "", Token.Type.End));
-                while (lexHasNext() && lexChar() != '\n') {
+                while (lexChar() != 0 && lexChar() != '\n') {
                     lexNext();
                 }
                 continue;
@@ -177,11 +177,11 @@ public class Assemble {
             if (lexChar() == '\'') {
                 lexNext();
                 start = lexPos;
-                while (lexHasNext() && (lexChar() != '\'' || lexPrev() == '\\')) {
+                while (lexChar() != 0 && (lexChar() != '\'' || lexPrev() == '\\')) {
                     lexNext();
                 }
-                if (!lexHasNext()) {
-                    throw new AsmException(inputFile + "(" + lexerLine + "): Unterminated string.");
+                if (lexChar() == 0) {
+                    throw new AsmException(inputFile + "(" + lexerLine + "): Unterminated character constant.");
                 }
                 end = lexPos;
                 lexNext();
@@ -202,10 +202,10 @@ public class Assemble {
             if (lexChar() == '"') {
                 lexNext();
                 start = lexPos;
-                while (lexHasNext() && (lexChar() != '"' || lexPrev() == '\\')) {
+                while (lexChar() != 0 && (lexChar() != '"' || lexPrev() == '\\')) {
                     lexNext();
                 }
-                if (!lexHasNext()) {
+                if (lexChar() == 0) {
                     throw new AsmException(inputFile + "(" + lexerLine + "): Unterminated string.");
                 }
                 end = lexPos;
@@ -220,7 +220,7 @@ public class Assemble {
                 start = lexPos;
                 boolean parseFloat = false;
                 lexNext();
-                while (lexHasNext() && (Character.isDigit(lexChar()) || lexChar() == '.')) {
+                while (Character.isDigit(lexChar()) || lexChar() == '.') {
                     if (lexChar() == '.') {
                         parseFloat = true;
                     }
@@ -241,7 +241,7 @@ public class Assemble {
             } else if (lexChar() == '$') {
                 lexNext();
                 start = lexPos;
-                while (lexHasNext() && isHexDigit(lexChar())) {
+                while (isHexDigit(lexChar())) {
                     lexNext();
                 }
                 tokenList.add(new Token(inputFile, lexerLine, Integer.parseUnsignedInt(fileContent.substring(start, lexPos), 16)));
@@ -250,10 +250,10 @@ public class Assemble {
             } else if (isIdentifier(lexChar(), true)) {
                 start = lexPos;
                 lexNext();
-                while (lexHasNext() && isIdentifier(lexChar(), false)) {
+                while (isIdentifier(lexChar(), false)) {
                     lexNext();
                 }
-                if (lexHasNext() && lexChar() == ':') {
+                if (lexChar() == ':') {
                     lexNext();
                 }
                 end = lexPos;
@@ -297,16 +297,6 @@ public class Assemble {
 
     private int lexPrev() {
         return lexerLast;
-    }
-
-    /**
-     * Return whether or not there is another character
-     *
-     * @return true if there is another character from the file data, false
-     *         otherwise
-     */
-    private boolean lexHasNext() {
-        return (lexPos < fileLength);
     }
 
     /**
