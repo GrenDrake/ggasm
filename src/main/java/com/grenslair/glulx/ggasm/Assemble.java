@@ -591,22 +591,26 @@ public class Assemble {
 
             // otherwise it must be a mnemonic (or an error)
             if (Mnemonic.list.containsKey(stmt.get(0).getStringValue())) {
-                // get the mnemonic
-                Mnemonic m = Mnemonic.list.get(stmt.get(0).getStringValue());
-                if (m.operands != stmt.size() - 1) {
-                    throw new AsmException(stmt.get(0).getSource() + ": Bad operand count");
-                }
-
-                AsmInstruction ai = new AsmInstruction(m);
-                ai.setSource(stmt.get(0));
-                for (int i = 1; i < stmt.size(); ++i) {
-                    ai.addOperand(new Operand(stmt.get(i), asm));
-                }
-                asm.addLine(ai);
+                parseAsmStatement(stmt);
             } else {
                 throw new AsmException(stmt.get(0).getSource() + ": Unknown mnemonic \"" + stmt.get(0).getStringValue() + "\"");
             }
         }
+    }
+    
+    private void parseAsmStatement(List<Token> stmt) throws AsmException {
+        // get the mnemonic
+        Mnemonic m = Mnemonic.list.get(stmt.get(0).getStringValue());
+        if (m.operands != stmt.size() - 1) {
+            throw new AsmException(stmt.get(0).getSource() + ": Bad operand count");
+        }
+
+        AsmInstruction ai = new AsmInstruction(m);
+        ai.setSource(stmt.get(0));
+        for (int i = 1; i < stmt.size(); ++i) {
+            ai.addOperand(new Operand(stmt.get(i), asm));
+        }
+        asm.addLine(ai);
     }
 
     /**
