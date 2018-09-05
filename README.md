@@ -1,5 +1,7 @@
 # GGASM
 
+**This project has been depreciated in favour of my reimagined version [glulx-assemble](https://github.com/GrenDrake/glulx-assemble). I have no plans to remove this repository, but it is unlikely to see significant future updates.**
+
 This is a basic assembler for the Glulx virtual machine. It's still a work in progress, but should be nearly usable in it's current state.
 
 To build an assembly file using GGASM, two arguments are required: the name of the input file and the name of the output file.
